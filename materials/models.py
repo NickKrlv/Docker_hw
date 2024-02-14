@@ -20,8 +20,9 @@ class Lession(models.Model):
     name = models.CharField(max_length=50, verbose_name='course_name')
     preview = models.ImageField(**NULLABLE, verbose_name='preview')
     description = models.TextField(verbose_name='description')
-    url = models.CharField(max_length=None, verbose_name='url')
-    course_id = models.ForeignKey('Course', on_delete=models.SET_NULL, null=True, verbose_name='course_id')
+    url = models.CharField(max_length=None, verbose_name='url', **NULLABLE)
+    course_id = models.ForeignKey('Course', on_delete=models.SET_NULL, null=True, default=None,
+                                  verbose_name='course_id')
 
     def __str__(self):
         return {self.name}
