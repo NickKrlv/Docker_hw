@@ -9,14 +9,14 @@ class Course(models.Model):
     description = models.TextField(verbose_name='description')
 
     def __str__(self):
-        return {self.name}
+        return self.name
 
     class Meta:
         verbose_name = 'курс'
         verbose_name_plural = 'курсы'
 
 
-class Lession(models.Model):
+class Lesson(models.Model):
     name = models.CharField(max_length=50, verbose_name='course_name')
     preview = models.ImageField(**NULLABLE, verbose_name='preview')
     description = models.TextField(verbose_name='description')
@@ -25,7 +25,7 @@ class Lession(models.Model):
                                   verbose_name='course_id')
 
     def __str__(self):
-        return {self.name}
+        return self.name
 
     class Meta:
         verbose_name = 'урок'
