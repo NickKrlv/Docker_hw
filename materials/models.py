@@ -22,7 +22,7 @@ class Lesson(models.Model):
     description = models.TextField(verbose_name='description')
     url = models.CharField(max_length=None, verbose_name='url', **NULLABLE)
     course_id = models.ForeignKey('Course', on_delete=models.SET_NULL, null=True, default=None,
-                                  verbose_name='course_id')
+                                  verbose_name='course_id', related_name='lessons')
 
     def __str__(self):
         return self.name
