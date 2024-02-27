@@ -12,11 +12,12 @@ class Command(BaseCommand):
             cursor.execute(
                 "TRUNCATE TABLE users_user, materials_course, materials_lesson, users_payment RESTART IDENTITY CASCADE")
 
-        user1 = User.objects.create(email='user1@example.com', phone='1234567890', city='City1', avatar='avatar1.jpg',
-                                    password='password1')
-        user2 = User.objects.create(email='user2@example.com', phone='0987654321', city='City2', avatar='avatar2.jpg',
-                                    password='password2')
+        user1 = User.objects.create(email='user1@example.com', phone='1234567890', city='City1', avatar='avatar1.jpg')
+        user2 = User.objects.create(email='user2@example.com', phone='0987654321', city='City2', avatar='avatar2.jpg')
         moderator = User.objects.create(email='moderator@sky.pro', password='moderator', is_staff=True)
+        user1.set_password('user1')
+        user2.set_password('user2')
+        moderator.set_password('moderator')
         course1 = Course.objects.create(name='Course 1', description='Description 1')
         course2 = Course.objects.create(name='Course 2', description='Description 2')
 
