@@ -16,8 +16,11 @@ class Command(BaseCommand):
         user2 = User.objects.create(email='user2@example.com', phone='0987654321', city='City2', avatar='avatar2.jpg')
         moderator = User.objects.create(email='moderator@sky.pro', password='moderator', is_staff=True)
         user1.set_password('user1')
+        user1.save()
         user2.set_password('user2')
+        user2.save()
         moderator.set_password('moderator')
+        moderator.save()
         course1 = Course.objects.create(name='Course 1', description='Description 1')
         course2 = Course.objects.create(name='Course 2', description='Description 2')
 
