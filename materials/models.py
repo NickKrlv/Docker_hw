@@ -18,13 +18,13 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
-    name = models.CharField(max_length=50, verbose_name='course_name')
+    name = models.CharField(max_length=50, verbose_name='course_name', unique=True)
     preview = models.ImageField(**NULLABLE, verbose_name='preview')
     description = models.TextField(verbose_name='description')
-    url = models.CharField(max_length=None, verbose_name='url', **NULLABLE)
-    course_id = models.ForeignKey('Course', on_delete=models.SET_NULL, null=True, default=None,
-                                  verbose_name='course_id', related_name='lessons')
-    owner = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='owner', **NULLABLE)
+    url = models.URLField(verbose_name='url', **NULLABLE)
+    course_id = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, default=None,
+                                  verbose_name='course', related_name='lessons')
+    owner = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='owner')
 
     def __str__(self):
         return self.name
