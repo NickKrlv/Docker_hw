@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
 NULLABLE = {'blank': True, 'null': True}
@@ -32,3 +33,13 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = 'урок'
         verbose_name_plural = 'уроки'
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='подписки')
+    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='подписчики')
+
+    class Meta:
+        unique_together = ('user', 'course')
+        verbose_name = 'подписка'
+        verbose_name_plural = 'подписки'
