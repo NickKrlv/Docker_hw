@@ -18,9 +18,9 @@ class CourseViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         """Определяем права доступа с учетом запрашиваемого действия"""
         if self.action == 'create':
-            self.permission_classes = [~IsModerator, IsAuthenticated]
+            self.permission_classes = [IsAuthenticated, ~IsModerator]
         elif self.action in ['list', 'retrieve', 'update']:
-            self.permission_classes = [IsModerator | IsOwner, IsAuthenticated]
+            self.permission_classes = [IsAuthenticated, IsModerator | IsOwner]
         elif self.action == 'destroy':
             self.permission_classes = [IsOwner]
         return super().get_permissions()
@@ -38,7 +38,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsModerator | IsOwner, IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsModerator | IsOwner]
 
     def get_queryset(self):
         user = self.request.user
@@ -50,12 +50,12 @@ class LessonListAPIView(generics.ListAPIView):
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsModerator | IsOwner, IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsModerator | IsOwner]
 
 
 class LessonCreateView(generics.CreateAPIView):
     serializer_class = LessonSerializer
-    permission_classes = [~IsModerator, IsAuthenticated]
+    permission_classes = [IsAuthenticated, ~IsModerator]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -64,7 +64,7 @@ class LessonCreateView(generics.CreateAPIView):
 class LessonUpdateAPIView(generics.UpdateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsModerator | IsOwner]
+    permission_classes = [IsAuthenticated, IsModerator | IsOwner]
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
@@ -84,13 +84,10 @@ class SubscriptionView(APIView):
 
         course_item = get_object_or_404(Course, id=course_id)
 
-        subs_item = Subscription.objects.filter(user=user, course=course_item)
-
-        if subs_item.exists():
-            subs_item.delete()
-            message = 'Подписка удалена'
-        else:
+        if not Subscription.objects.filter(user=user, course=course_item).exists():
             Subscription.objects.create(user=user, course=course_item)
             message = 'Подписка добавлена'
+        else:
+            message = 'Подписка уже существует'
 
         return Response({"message": message}, status=status.HTTP_200_OK)

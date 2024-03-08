@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.db import models
 
 NULLABLE = {'blank': True, 'null': True}
@@ -19,7 +18,7 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
-    name = models.CharField(max_length=50, verbose_name='course_name', unique=True)
+    name = models.CharField(max_length=50, verbose_name='name', unique=True)
     preview = models.ImageField(**NULLABLE, verbose_name='preview')
     description = models.TextField(verbose_name='description')
     url = models.URLField(verbose_name='url', **NULLABLE)
@@ -36,7 +35,7 @@ class Lesson(models.Model):
 
 
 class Subscription(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='подписки')
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='подписки')
     course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='подписчики')
 
     class Meta:
