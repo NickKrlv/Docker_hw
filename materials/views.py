@@ -3,7 +3,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from .pagination import MyPagination
 from materials.models import Course, Lesson, Subscription
 from materials.permissions import IsOwner
 from materials.serializers import CourseSerializer, LessonSerializer
@@ -14,6 +14,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     permission_classes = [IsAuthenticated]
+    pagination_class = MyPagination
 
     def get_permissions(self):
         """Определяем права доступа с учетом запрашиваемого действия"""
@@ -39,6 +40,7 @@ class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated, IsModerator | IsOwner]
+    pagination_class = MyPagination
 
     def get_queryset(self):
         user = self.request.user
