@@ -47,6 +47,7 @@ class LessonTestCase(APITestCase):
         response = view(request)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Lesson.objects.count(), 3)
 
     def test_get_lesson_detail(self):
         """ Тест на получение детальной информации об уроке """
@@ -60,6 +61,8 @@ class LessonTestCase(APITestCase):
 
         response = view(request, pk=self.lesson_1.pk)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], 'test lesson 1')
+        self.assertEqual(response.data['description'], 'test description 1')
 
     def test_update_lesson(self):
         """ Тест на обновление урока """
