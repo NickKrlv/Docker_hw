@@ -3,7 +3,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .pagination import MyPagination
+
 from materials.models import Course, Lesson, Subscription
 from materials.permissions import IsOwner
 from materials.serializers import CourseSerializer, LessonSerializer
@@ -14,7 +14,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     permission_classes = [IsAuthenticated]
-    pagination_class = MyPagination
 
     def get_permissions(self):
         """Определяем права доступа с учетом запрашиваемого действия"""
@@ -40,7 +39,6 @@ class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated, IsModerator | IsOwner]
-    pagination_class = MyPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -66,7 +64,7 @@ class LessonCreateView(generics.CreateAPIView):
 class LessonUpdateAPIView(generics.UpdateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated, IsModerator | IsOwner]
+    permission_classes = [IsModerator | IsOwner]
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
@@ -86,10 +84,13 @@ class SubscriptionView(APIView):
 
         course_item = get_object_or_404(Course, id=course_id)
 
-        if not Subscription.objects.filter(user=user, course=course_item).exists():
+        subs_item = Subscription.objects.filter(user=user, course=course_item)
+
+        if subs_item.exists():
+            subs_item.delete()
+            message = 'Подписка удалена'
+        else:
             Subscription.objects.create(user=user, course=course_item)
             message = 'Подписка добавлена'
-        else:
-            message = 'Подписка уже существует'
 
         return Response({"message": message}, status=status.HTTP_200_OK)
