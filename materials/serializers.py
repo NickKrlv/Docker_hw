@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from materials.models import Course, Lesson, Subscription
 from users.models import User
-from .validators import validate_youtube_link
+from .validators import Char_validate_youtube_link
 
 
 class LessonSerializer(serializers.ModelSerializer):
-    url = serializers.URLField(validators=[validate_youtube_link])
+    url = serializers.CharField(validators=[Char_validate_youtube_link()])
 
     class Meta:
         model = Lesson

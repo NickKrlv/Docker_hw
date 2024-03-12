@@ -24,8 +24,10 @@ class Command(BaseCommand):
         course1 = Course.objects.create(name='Course 1', description='Description 1')
         course2 = Course.objects.create(name='Course 2', description='Description 2')
 
-        lesson1 = Lesson.objects.create(name='Lesson 1', description='Lesson 1 description', course_id=course1)
-        lesson2 = Lesson.objects.create(name='Lesson 2', description='Lesson 2 description', course_id=course2)
+        lesson1 = Lesson.objects.create(name='Lesson 1', description='Lesson 1 description', course_id=course1,
+                                        owner=user1)
+        lesson2 = Lesson.objects.create(name='Lesson 2', description='Lesson 2 description', course_id=course2,
+                                        owner=user2)
 
         Payment.objects.create(user=user1, payment_date=date.today(), course=course1, amount=100.00,
                                payment_method='cash')
