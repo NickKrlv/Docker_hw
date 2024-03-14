@@ -3,11 +3,12 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from .services import get_session
 from materials.models import Course, Lesson, Subscription
 from materials.permissions import IsOwner
 from materials.serializers import CourseSerializer, LessonSerializer
 from users.permissions import IsModerator
+from pprint import pprint
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -89,8 +90,9 @@ class SubscriptionView(APIView):
         if subs_item.exists():
             subs_item.delete()
             message = 'Подписка удалена'
+            return Response({"message": message}, status=status.HTTP_200_OK)
         else:
-            Subscription.objects.create(user=user, course=course_item)
-            message = 'Подписка добавлена'
+            response = get_session(course_item)
+            url = response.get('url')
 
-        return Response({"message": message}, status=status.HTTP_200_OK)
+            return Response(f'Для оплаты перейдите по ссылке: {url}', status=status.HTTP_200_OK)

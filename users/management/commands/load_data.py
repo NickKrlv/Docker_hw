@@ -21,8 +21,8 @@ class Command(BaseCommand):
         user2.save()
         moderator.set_password('moderator')
         moderator.save()
-        course1 = Course.objects.create(name='Course 1', description='Description 1')
-        course2 = Course.objects.create(name='Course 2', description='Description 2')
+        course1 = Course.objects.create(name='Course 1', description='Description 1', price=100)
+        course2 = Course.objects.create(name='Course 2', description='Description 2', price=200)
 
         lesson1 = Lesson.objects.create(name='Lesson 1', description='Lesson 1 description', course_id=course1,
                                         owner=user1)

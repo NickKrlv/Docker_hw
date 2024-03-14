@@ -8,6 +8,7 @@ class Course(models.Model):
     preview = models.ImageField(**NULLABLE, verbose_name='preview')
     description = models.TextField(verbose_name='description')
     owner = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='owner', **NULLABLE)
+    price = models.IntegerField(verbose_name='price', default=0)
 
     def __str__(self):
         return self.name

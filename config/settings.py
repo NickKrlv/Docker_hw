@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'users.apps.UsersConfig',
     'materials.apps.MaterialsConfig',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -154,3 +155,5 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
 }
+
+STRIPE_API_KEY = os.environ.get('STRIP_APIKEY')

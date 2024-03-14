@@ -11,9 +11,9 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'owner')
+    list_display = ('id', 'name', 'description', 'owner', 'price')
     search_fields = ('name', 'description')
-    list_editable = ('owner',)
+    list_editable = ('owner', 'price')
 
 
 @admin.register(Lesson)
