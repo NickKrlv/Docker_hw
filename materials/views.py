@@ -8,7 +8,7 @@ from materials.models import Course, Lesson, Subscription
 from materials.permissions import IsOwner
 from materials.serializers import CourseSerializer, LessonSerializer
 from users.permissions import IsModerator
-from pprint import pprint
+from .tasks import send_course_update_email
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -17,7 +17,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_permissions(self):
-        """Определяем права доступа с учетом запрашиваемого действия"""
         if self.action == 'create':
             self.permission_classes = [IsAuthenticated, ~IsModerator]
         elif self.action in ['list', 'retrieve', 'update']:
@@ -34,6 +33,24 @@ class CourseViewSet(viewsets.ModelViewSet):
         if user.is_staff or user.groups.filter(name='moderators').exists():
             return Course.objects.all()
         return Course.objects.filter(owner=user)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        subscribers_emails = instance.подписчики.values_list('user__email', flat=True)
+
+        if subscribers_emails:
+            send_course_update_email.delay(instance.id, list(subscribers_emails))
+
+        return Response(serializer.data)
+
+    def subscribe_user(self, course, user):
+        if course.subscribers.filter(id=user.id).exists():
+            return True
+        return False
 
 
 class LessonListAPIView(generics.ListAPIView):

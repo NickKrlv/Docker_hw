@@ -25,7 +25,7 @@ class Lesson(models.Model):
     url = models.URLField(verbose_name='url', **NULLABLE)
     course_id = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, default=None,
                                   verbose_name='course', related_name='lessons')
-    owner = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='owner')
+    owner = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='owner', default=None, **NULLABLE)
 
     def __str__(self):
         return self.name

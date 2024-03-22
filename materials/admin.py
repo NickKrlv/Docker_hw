@@ -1,6 +1,6 @@
 from django.contrib import admin
 from users.models import User
-from .models import Course, Lesson
+from .models import Course, Lesson, Subscription
 
 
 @admin.register(User)
@@ -26,3 +26,10 @@ class LessonAdmin(admin.ModelAdmin):
         return obj.course_id.name if obj.course_id else None
 
     get_course_name.short_description = 'Course'
+
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'course')
+    search_fields = ('user', 'course')
+    list_editable = ('user', 'course')
