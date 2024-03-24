@@ -153,7 +153,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
 }
 
@@ -161,13 +161,19 @@ STRIPE_API_KEY = os.environ.get('STRIP_APIKEY')
 
 CELERY_BROKER_URL = 'redis://localhost:6379'  # Например, Redis, который по умолчанию работает на порту 6379
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'  # URL-адрес брокера результатов, также Redis
-CELERY_TIMEZONE = "Australia/Tasmania"  # Часовой пояс для работы Celery
+CELERY_TIMEZONE = TIME_ZONE  # Часовой пояс для работы Celery
 CELERY_TASK_TRACK_STARTED = True  # Флаг отслеживания выполнения задач
 CELERY_TASK_TIME_LIMIT = 30 * 60  # Максимальное время на выполнение задачи
-
 CELERY_BEAT_SCHEDULE = {
-     'task-name': {
-         'task': 'materials.tasks.check_last_online',
-         'schedule': timedelta(seconds=10),
-     },
- }
+    'task-name': {
+        'task': 'materials.tasks.check_last_online',
+        'schedule': timedelta(seconds=10),
+    },
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'noreply@oscarbot.ru'
+EMAIL_HOST_PASSWORD = 'AsTSNVv7pun9'

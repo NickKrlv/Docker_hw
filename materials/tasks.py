@@ -7,14 +7,18 @@ from users.models import User
 
 @shared_task
 def send_course_update_email(course_id, emails):
-    """Тут реализована таска на отправку письма об обновлении курса, но я ее не стал тестить пока что."""
+    """Таска на отправку письма об обновлении курса."""
 
     course = Course.objects.get(pk=course_id)
-    subject = f'Обновление курса: {course.name}'
-    message = 'Курс, на который вы подписаны, был обновлен. Проверьте новые материалы.'
-    sender_email = 'your@example.com'
-    # send_mail(subject, message, sender_email, emails)
-    print(f"Sending course update email to: {emails}")
+
+    subject = f"Обновление курса: {course.name}"
+    from_email = "noreply@oscarbot.ru"
+    message = f'Курс {course.name} был обновлен.',
+
+    print(emails)
+
+    for email in emails:
+        send_mail(subject, message, from_email, [email])
 
 
 def check_last_online():
@@ -34,5 +38,6 @@ def check_last_online():
         print("No inactive users")
     print("Reached the end of the function")
 
+# sudo service redis-server start
 # celery -A config worker -l INFO -P eventlet
 # celery -A config beat -l INFO

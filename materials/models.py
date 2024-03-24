@@ -36,8 +36,8 @@ class Lesson(models.Model):
 
 
 class Subscription(models.Model):
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='подписки')
-    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='подписчики')
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='subscriptions')
+    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='subscribers')
 
     class Meta:
         unique_together = ('user', 'course')

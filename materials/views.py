@@ -40,7 +40,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
-        subscribers_emails = instance.подписчики.values_list('user__email', flat=True)
+        subscribers_emails = instance.subscribers.values_list('user__email', flat=True)
 
         if subscribers_emails:
             send_course_update_email.delay(instance.id, list(subscribers_emails))
