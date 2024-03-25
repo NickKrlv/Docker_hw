@@ -1,5 +1,3 @@
-from pprint import pprint
-
 import stripe
 from django.conf import settings
 

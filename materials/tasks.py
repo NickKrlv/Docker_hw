@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from celery import shared_task
 from django.core.mail import send_mail
+
+from config.settings import EMAIL_HOST_USER
 from materials.models import Course
 from users.models import User
 
@@ -12,13 +14,10 @@ def send_course_update_email(course_id, emails):
     course = Course.objects.get(pk=course_id)
 
     subject = f"Обновление курса: {course.name}"
-    from_email = "noreply@oscarbot.ru"
+    from_email = EMAIL_HOST_USER
     message = f'Курс {course.name} был обновлен.',
 
-    print(emails)
-
-    for email in emails:
-        send_mail(subject, message, from_email, [email])
+    send_mail(subject, message, from_email, emails)
 
 
 def check_last_online():
