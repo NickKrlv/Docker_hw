@@ -7,28 +7,24 @@ services:
       - '6379:6379'
 
   db:
+    restart: always
     image: postgres
     env_file:
       - .env
-    ports:
-      - '5432:5432'
-    environment:
-        POSTGRES_USER: ${USER}
-        POSTGRES_PASSWORD: ${PASSWORD}
-        POSTGRES_DB: ${NAME}
-        PGDATA: /var/lib/postgresql/data/pgdata
+    expose:
+      - '5432'
     volumes:
-      - .:/code
+      - ./postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   app:
     build: .
     tty: true
-    command: python manage.py migrate && python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - '8001:8000'
     volumes:
@@ -36,6 +32,23 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  celery:
+    build: .
+    tty: true
+    command: celery -A config worker -l INFO
+    depends_on:
+      - redis
+      - app
+
+  celery-beat:
+    build: .
+    tty: true
+    command: celery -A config beat -l INFO -S django
+    depends_on:
+      - redis
+      - app
+      - celery
 
 volumes:
   pgdata:
